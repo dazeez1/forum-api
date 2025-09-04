@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Environment variables
+.env
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# dotenv environment variables file
+.env
+backend/.env
+
+# IDE files
+.vscode/
+
+
+# OS generated files
+.DS_Store
+
