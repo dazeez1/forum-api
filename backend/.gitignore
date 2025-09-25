@@ -4,12 +4,9 @@ backend/node_modules/
 
 # Environment variables
 .env
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# dotenv environment variables file
-.env
+.env.production
+.env.local
+.env.staging
 backend/.env
 
 # IDE files
@@ -19,3 +16,5 @@ backend/.env
 # OS generated files
 .DS_Store
 
+Forum-API-Collection.postman_collection.json
+Forum-API-Production.postman_collection.json

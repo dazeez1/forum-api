@@ -1,25 +1,25 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const { graphqlHTTP } = require('express-graphql');
 
-const connectDB = require("./src/config/database");
+const connectDB = require('./src/config/database');
 const { schema, root } = require('./src/graphql/schema');
 
 // Import routes
-const authRoutes = require("./src/routes/auth");
-const threadRoutes = require("./src/routes/threads");
-const commentRoutes = require("./src/routes/comments");
-const voteRoutes = require("./src/routes/votes");
-const adminRoutes = require("./src/routes/admin");
+const authRoutes = require('./src/routes/auth');
+const threadRoutes = require('./src/routes/threads');
+const commentRoutes = require('./src/routes/comments');
+const voteRoutes = require('./src/routes/votes');
+const adminRoutes = require('./src/routes/admin');
 
 const app = express();
 
 // Connect to database (skip in test environment)
-if (process.env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== 'test') {
   connectDB();
 }
 
@@ -30,9 +30,9 @@ app.use(helmet());
 app.use(
   cors({
     origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://yourdomain.com"]
-        : ["http://localhost:3000", "http://localhost:3001"],
+      process.env.NODE_ENV === 'production'
+        ? [process.env.CORS_ORIGIN || 'https://your-frontend-domain.com']
+        : ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
   })
 );
@@ -43,63 +43,66 @@ const limiter = rateLimit({
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
   message: {
     success: false,
-    message: "Too many requests from this IP, please try again later.",
+    message: 'Too many requests from this IP, please try again later.',
   },
 });
 
 app.use(limiter);
 
 // Logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
 }
 
 // Body parsing middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check endpoint
-app.get("/health", (req, res) => {
+app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Forum API is running",
+    message: 'Forum API is running',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
   });
 });
 
 // API routes
-app.use("/api/auth", authRoutes);
-app.use("/api/threads", threadRoutes);
-app.use("/api/comments", commentRoutes);
-app.use("/api", voteRoutes);
-app.use("/api/admin", adminRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/threads', threadRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api', voteRoutes);
+app.use('/api/admin', adminRoutes);
 
 // GraphQL endpoint
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true, // Enable GraphiQL for testing
-}));
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true, // Enable GraphiQL for testing
+  })
+);
 
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: 'Route not found',
   });
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
-  console.error("Global error handler:", err);
+  console.error('Global error handler:', err);
 
   // Mongoose validation error
-  if (err.name === "ValidationError") {
-    const errors = Object.values(err.errors).map((e) => e.message);
+  if (err.name === 'ValidationError') {
+    const errors = Object.values(err.errors).map(e => e.message);
     return res.status(400).json({
       success: false,
-      message: "Validation Error",
+      message: 'Validation Error',
       errors,
     });
   }
@@ -114,24 +117,24 @@ app.use((err, req, res, next) => {
   }
 
   // JWT errors
-  if (err.name === "JsonWebTokenError") {
+  if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       success: false,
-      message: "Invalid token",
+      message: 'Invalid token',
     });
   }
 
-  if (err.name === "TokenExpiredError") {
+  if (err.name === 'TokenExpiredError') {
     return res.status(401).json({
       success: false,
-      message: "Token expired",
+      message: 'Token expired',
     });
   }
 
   // Default error
   res.status(err.status || 500).json({
     success: false,
-    message: err.message || "Internal server error",
+    message: err.message || 'Internal server error',
   });
 });
 

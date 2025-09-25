@@ -74,6 +74,17 @@ backend/
 - npm or yarn package manager
 - MongoDB Atlas account (cloud database)
 
+### 🚀 Deployment on Render
+
+This API is ready for deployment on Render. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+**Quick Deploy Steps:**
+
+1. Connect your GitHub repository to Render
+2. Set environment variables (MONGO_URI, JWT_SECRET, etc.)
+3. Deploy and get your production URL
+4. Update Postman collection with production URL
+
 ### Setup Instructions
 
 1. **Clone the repository**
@@ -146,25 +157,25 @@ backend/
 
 ### Voting Endpoints
 
-| Method | Endpoint              | Description                    | Auth Required |
-| ------ | --------------------- | ------------------------------ | ------------- |
-| POST   | `/api/threads/:id/vote` | Upvote/downvote thread        | Yes           |
-| POST   | `/api/comments/:id/vote` | Upvote/downvote comment      | Yes           |
+| Method | Endpoint                 | Description             | Auth Required |
+| ------ | ------------------------ | ----------------------- | ------------- |
+| POST   | `/api/threads/:id/vote`  | Upvote/downvote thread  | Yes           |
+| POST   | `/api/comments/:id/vote` | Upvote/downvote comment | Yes           |
 
 ### Admin Endpoints
 
-| Method | Endpoint                | Description                    | Auth Required |
-| ------ | ----------------------- | ------------------------------ | ------------- |
-| GET    | `/api/admin/threads`    | Get all threads (admin view)  | Yes (Admin)   |
-| DELETE | `/api/admin/comments/:id` | Delete comment (admin)       | Yes (Admin)   |
-| PUT    | `/api/admin/threads/:id/lock` | Lock/unlock thread        | Yes (Admin)   |
-| PUT    | `/api/admin/threads/:id/pin` | Pin/unpin thread          | Yes (Admin)   |
-| GET    | `/api/admin/users`      | Get all users (admin view)    | Yes (Admin)   |
+| Method | Endpoint                      | Description                  | Auth Required |
+| ------ | ----------------------------- | ---------------------------- | ------------- |
+| GET    | `/api/admin/threads`          | Get all threads (admin view) | Yes (Admin)   |
+| DELETE | `/api/admin/comments/:id`     | Delete comment (admin)       | Yes (Admin)   |
+| PUT    | `/api/admin/threads/:id/lock` | Lock/unlock thread           | Yes (Admin)   |
+| PUT    | `/api/admin/threads/:id/pin`  | Pin/unpin thread             | Yes (Admin)   |
+| GET    | `/api/admin/users`            | Get all users (admin view)   | Yes (Admin)   |
 
 ### GraphQL Endpoint
 
-| Method | Endpoint  | Description                    | Auth Required |
-| ------ | --------- | ------------------------------ | ------------- |
+| Method | Endpoint   | Description                    | Auth Required |
+| ------ | ---------- | ------------------------------ | ------------- |
 | GET    | `/graphql` | GraphQL endpoint with GraphiQL | No            |
 
 ## 📝 API Usage Examples
