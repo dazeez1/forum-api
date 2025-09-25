@@ -4,13 +4,17 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
+const { graphqlHTTP } = require('express-graphql');
 
 const connectDB = require("./src/config/database");
+const { schema, root } = require('./src/graphql/schema');
 
 // Import routes
 const authRoutes = require("./src/routes/auth");
 const threadRoutes = require("./src/routes/threads");
 const commentRoutes = require("./src/routes/comments");
+const voteRoutes = require("./src/routes/votes");
+const adminRoutes = require("./src/routes/admin");
 
 const app = express();
 
@@ -68,6 +72,15 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/threads", threadRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api", voteRoutes);
+app.use("/api/admin", adminRoutes);
+
+// GraphQL endpoint
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true, // Enable GraphiQL for testing
+}));
 
 // 404 handler
 app.use((req, res) => {

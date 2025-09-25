@@ -6,6 +6,9 @@ A robust and scalable backend API for a forum application with support for threa
 
 - **Threaded Comments**: Support for nested comment structures with up to 5 levels of depth
 - **User Authentication**: Secure user registration, login, and JWT-based session management
+- **Voting System**: Upvote/downvote threads and comments with duplicate vote prevention
+- **Admin Moderation**: Comprehensive admin panel for content moderation and user management
+- **GraphQL API**: Modern GraphQL endpoint with GraphiQL interface for flexible data querying
 - **RESTful API**: Clean and intuitive API endpoints following REST principles
 - **Thread Management**: Create, read, update, and delete forum threads
 - **Comment System**: Add comments to threads and reply to existing comments
@@ -23,6 +26,7 @@ A robust and scalable backend API for a forum application with support for threa
 - **Testing**: Jest with supertest
 - **Security**: helmet, cors, express-rate-limit
 - **Environment**: dotenv for configuration management
+- **GraphQL**: express-graphql with GraphiQL interface
 
 ## 📁 Project Structure
 
@@ -32,7 +36,9 @@ backend/
 │   ├── controllers/     # Request handlers and business logic
 │   │   ├── authController.js
 │   │   ├── threadController.js
-│   │   └── commentController.js
+│   │   ├── commentController.js
+│   │   ├── voteController.js
+│   │   └── adminController.js
 │   ├── models/          # Database models and schemas
 │   │   ├── User.js
 │   │   ├── Thread.js
@@ -40,14 +46,18 @@ backend/
 │   ├── routes/          # API route definitions
 │   │   ├── auth.js
 │   │   ├── threads.js
-│   │   └── comments.js
+│   │   ├── comments.js
+│   │   ├── votes.js
+│   │   └── admin.js
 │   ├── middleware/      # Custom middleware functions
 │   │   ├── auth.js
 │   │   └── validation.js
 │   ├── utils/           # Utility functions and helpers
 │   │   └── helpers.js
-│   └── config/          # Configuration files
-│       └── database.js
+│   ├── config/          # Configuration files
+│   │   └── database.js
+│   └── graphql/         # GraphQL schema and resolvers
+│       └── schema.js
 ├── tests/               # Test files and test utilities
 │   └── api.test.js
 ├── server.js            # Main application entry point
@@ -134,6 +144,29 @@ backend/
 | PUT    | `/api/comments/:id`        | Update comment          | Yes (Owner)       |
 | DELETE | `/api/comments/:id`        | Delete comment          | Yes (Owner/Admin) |
 
+### Voting Endpoints
+
+| Method | Endpoint              | Description                    | Auth Required |
+| ------ | --------------------- | ------------------------------ | ------------- |
+| POST   | `/api/threads/:id/vote` | Upvote/downvote thread        | Yes           |
+| POST   | `/api/comments/:id/vote` | Upvote/downvote comment      | Yes           |
+
+### Admin Endpoints
+
+| Method | Endpoint                | Description                    | Auth Required |
+| ------ | ----------------------- | ------------------------------ | ------------- |
+| GET    | `/api/admin/threads`    | Get all threads (admin view)  | Yes (Admin)   |
+| DELETE | `/api/admin/comments/:id` | Delete comment (admin)       | Yes (Admin)   |
+| PUT    | `/api/admin/threads/:id/lock` | Lock/unlock thread        | Yes (Admin)   |
+| PUT    | `/api/admin/threads/:id/pin` | Pin/unpin thread          | Yes (Admin)   |
+| GET    | `/api/admin/users`      | Get all users (admin view)    | Yes (Admin)   |
+
+### GraphQL Endpoint
+
+| Method | Endpoint  | Description                    | Auth Required |
+| ------ | --------- | ------------------------------ | ------------- |
+| GET    | `/graphql` | GraphQL endpoint with GraphiQL | No            |
+
 ## 📝 API Usage Examples
 
 ### User Registration
@@ -191,6 +224,52 @@ curl -X POST http://localhost:3000/api/comments/COMMENT_ID/reply \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
     "content": "This is my reply"
+  }'
+```
+
+### Vote on Thread
+
+```bash
+curl -X POST http://localhost:3000/api/threads/THREAD_ID/vote \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "voteType": "upvote"
+  }'
+```
+
+### Vote on Comment
+
+```bash
+curl -X POST http://localhost:3000/api/comments/COMMENT_ID/vote \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "voteType": "downvote"
+  }'
+```
+
+### Admin: Get All Threads
+
+```bash
+curl -X GET http://localhost:3000/api/admin/threads \
+  -H "Authorization: Bearer ADMIN_JWT_TOKEN"
+```
+
+### Admin: Delete Comment
+
+```bash
+curl -X DELETE http://localhost:3000/api/admin/comments/COMMENT_ID \
+  -H "Authorization: Bearer ADMIN_JWT_TOKEN"
+```
+
+### GraphQL Query Example
+
+```bash
+curl -X POST http://localhost:3000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ threads { threads { _id title content author { name } } } }"
   }'
 ```
 
@@ -283,4 +362,4 @@ For support and questions:
 
 ---
 
-**Status**: ✅ Complete implementation with authentication, threads, and nested comments system ready for production use.
+**Status**: ✅ Complete implementation with authentication, threads, nested comments, voting system, admin moderation, and GraphQL API ready for production use.
