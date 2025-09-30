@@ -16,5 +16,5 @@ backend/.env
 # OS generated files
 .DS_Store
 
-Forum-API-Collection.postman_collection.json
-Forum-API-Production.postman_collection.json
+
+# Forum-API-Production.postman_collection.json

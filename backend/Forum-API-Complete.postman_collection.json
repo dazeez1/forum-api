@@ -1,0 +1,1005 @@
+{
+  "info": {
+    "name": "Forum API - Complete Live Collection",
+    "description": "Complete API collection for Forum backend deployed on Render with all endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://forum-api-cfmd.onrender.com",
+      "type": "string"
+    },
+    {
+      "key": "userToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "threadId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "commentId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://forum-api-cfmd.onrender.com/health",
+          "protocol": "https",
+          "host": ["forum-api-cfmd", "onrender", "com"],
+          "path": ["health"]
+        },
+        "description": "Check if the API server is running"
+      }
+    },
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "1.1 User Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/signup",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "1.2 Admin Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forum Admin\",\n  \"email\": \"admin@forum.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/signup",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Register a new admin account"
+          }
+        },
+        {
+          "name": "1.3 User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/login",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login user and get JWT token"
+          }
+        },
+        {
+          "name": "1.4 Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@forum.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/login",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login admin and get admin JWT token"
+          }
+        },
+        {
+          "name": "1.5 Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/profile",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Get current user profile (requires authentication)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Threads",
+      "item": [
+        {
+          "name": "2.1 Get All Threads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads?page=1&limit=10&category=tech&search=api",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of threads per page"
+                },
+                {
+                  "key": "category",
+                  "value": "tech",
+                  "description": "Filter by category",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "api",
+                  "description": "Search in title and content",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all threads with pagination and optional filters"
+          }
+        },
+        {
+          "name": "2.2 Create Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Welcome to Forum API - Live Production\",\n  \"content\": \"This is a live thread created on the production Forum API deployed on Render. The API includes authentication, nested comments, voting system, admin moderation, and GraphQL support!\",\n  \"category\": \"general\",\n  \"tags\": [\"welcome\", \"production\", \"api\", \"render\"]\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads"]
+            },
+            "description": "Create a new thread (requires authentication)"
+          }
+        },
+        {
+          "name": "2.3 Get Thread by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}"]
+            },
+            "description": "Get specific thread with nested comments"
+          }
+        },
+        {
+          "name": "2.4 Update Thread",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Production Thread - All Features Working!\",\n  \"content\": \"This thread has been updated in production. All forum features are working perfectly including voting, moderation, and GraphQL!\",\n  \"category\": \"tech\",\n  \"tags\": [\"updated\", \"production\", \"forum\", \"api\", \"success\"]\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}"]
+            },
+            "description": "Update thread (requires authentication and ownership)"
+          }
+        },
+        {
+          "name": "2.5 Delete Thread",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}"]
+            },
+            "description": "Delete thread (requires authentication and ownership or admin)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Comments",
+      "item": [
+        {
+          "name": "3.1 Get Comments by Thread",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/thread/{{threadId}}?page=1&limit=20",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "thread", "{{threadId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all comments for a specific thread with nested structure"
+          }
+        },
+        {
+          "name": "3.2 Add Comment to Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is an amazing forum API! The production deployment on Render is working perfectly. Great job on implementing all the features including nested comments, voting, and admin moderation!\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/thread/{{threadId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "thread", "{{threadId}}"]
+            },
+            "description": "Add a comment to a thread (requires authentication)"
+          }
+        },
+        {
+          "name": "3.3 Reply to Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"I totally agree! The nested comment system is working beautifully. You can see this reply is properly nested under the parent comment. The depth tracking and reply management is excellent!\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/{{commentId}}/reply",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "{{commentId}}", "reply"]
+            },
+            "description": "Reply to an existing comment (creates nested comments)"
+          }
+        },
+        {
+          "name": "3.4 Update Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"[EDITED] This comment has been updated in production! The edit functionality is working perfectly with proper timestamp tracking.\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/{{commentId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "{{commentId}}"]
+            },
+            "description": "Update comment (requires authentication and ownership)"
+          }
+        },
+        {
+          "name": "3.5 Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/{{commentId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "{{commentId}}"]
+            },
+            "description": "Delete comment (soft delete - requires authentication and ownership)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Voting System",
+      "item": [
+        {
+          "name": "4.1 Upvote Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voteType\": \"upvote\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}/vote",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}", "vote"]
+            },
+            "description": "Upvote a thread (prevents duplicate voting)"
+          }
+        },
+        {
+          "name": "4.2 Downvote Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voteType\": \"downvote\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}/vote",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}", "vote"]
+            },
+            "description": "Downvote a thread (removes upvote if exists)"
+          }
+        },
+        {
+          "name": "4.3 Remove Thread Vote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voteType\": \"downvote\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads/{{threadId}}/vote",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads", "{{threadId}}", "vote"]
+            },
+            "description": "Remove vote by voting the same type again"
+          }
+        },
+        {
+          "name": "4.4 Upvote Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voteType\": \"upvote\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/{{commentId}}/vote",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "{{commentId}}", "vote"]
+            },
+            "description": "Upvote a comment (prevents duplicate voting)"
+          }
+        },
+        {
+          "name": "4.5 Downvote Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voteType\": \"downvote\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/comments/{{commentId}}/vote",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "comments", "{{commentId}}", "vote"]
+            },
+            "description": "Downvote a comment (removes upvote if exists)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Moderation",
+      "item": [
+        {
+          "name": "5.1 Admin - Get All Threads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/threads?page=1&limit=20&status=unlocked&category=tech",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "threads"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "unlocked",
+                  "description": "locked/unlocked",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "tech",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Admin view of all threads with detailed information"
+          }
+        },
+        {
+          "name": "5.2 Admin - Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/users?page=1&limit=20&role=user&isActive=true",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "role",
+                  "value": "user",
+                  "description": "user/admin",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "true/false",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Admin view of all users in the system"
+          }
+        },
+        {
+          "name": "5.3 Admin - Lock Thread",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isLocked\": true\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/threads/{{threadId}}/lock",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "threads", "{{threadId}}", "lock"]
+            },
+            "description": "Lock a thread to prevent new comments"
+          }
+        },
+        {
+          "name": "5.4 Admin - Unlock Thread",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isLocked\": false\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/threads/{{threadId}}/lock",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "threads", "{{threadId}}", "lock"]
+            },
+            "description": "Unlock a thread to allow comments"
+          }
+        },
+        {
+          "name": "5.5 Admin - Pin Thread",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPinned\": true\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/threads/{{threadId}}/pin",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "threads", "{{threadId}}", "pin"]
+            },
+            "description": "Pin a thread to the top of the forum"
+          }
+        },
+        {
+          "name": "5.6 Admin - Unpin Thread",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPinned\": false\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/threads/{{threadId}}/pin",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "threads", "{{threadId}}", "pin"]
+            },
+            "description": "Remove thread pin"
+          }
+        },
+        {
+          "name": "5.7 Admin - Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/comments/{{commentId}}",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "comments", "{{commentId}}"]
+            },
+            "description": "Admin hard delete of comment (spam removal)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. GraphQL",
+      "item": [
+        {
+          "name": "6.1 GraphQL - Get All Threads",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ threads(page: 1, limit: 10) { threads { _id title content author { name email role } category tags views likes dislikes commentCount createdAt updatedAt } pagination { current pages total } } }\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "GraphQL query to get all threads with full details"
+          }
+        },
+        {
+          "name": "6.2 GraphQL - Get Thread by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetThread($id: ID!) { thread(id: $id) { _id title content author { name email role } category tags views likes dislikes commentCount createdAt updatedAt } }\",\n  \"variables\": {\n    \"id\": \"{{threadId}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "GraphQL query to get specific thread by ID with variables"
+          }
+        },
+        {
+          "name": "6.3 GraphQL - Get Comments with Nested Replies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetComments($threadId: ID!) { comments(threadId: $threadId, page: 1, limit: 20) { comments { _id content author { name email role } depth likes dislikes isEdited editedAt isDeleted createdAt updatedAt replies { _id content author { name email } depth likes dislikes createdAt replies { _id content author { name } } } } pagination { current pages total } } }\",\n  \"variables\": {\n    \"threadId\": \"{{threadId}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "GraphQL query to get comments with nested replies up to 3 levels"
+          }
+        },
+        {
+          "name": "6.4 GraphQL - Get All Users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetUsers($page: Int, $limit: Int, $role: String) { users(page: $page, limit: $limit, role: $role) { users { _id name email role isActive createdAt updatedAt } pagination { current pages total } } }\",\n  \"variables\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"role\": \"user\"\n  }\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "GraphQL query to get users with role filtering"
+          }
+        },
+        {
+          "name": "6.5 GraphQL - Complex Multi-Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ threads(limit: 5) { threads { _id title author { name role } category commentCount views likes { length } dislikes { length } createdAt } pagination { total } } users(limit: 3, role: \\\"admin\\\") { users { _id name email role isActive } } }\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "Complex GraphQL query combining threads and users data"
+          }
+        },
+        {
+          "name": "6.6 GraphQL - Search Threads",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query SearchThreads($search: String, $category: String) { threads(search: $search, category: $category, limit: 10) { threads { _id title content author { name } category tags views commentCount createdAt } } }\",\n  \"variables\": {\n    \"search\": \"api\",\n    \"category\": \"tech\"\n  }\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/graphql",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["graphql"]
+            },
+            "description": "GraphQL search query with text search and category filter"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Error Testing",
+      "item": [
+        {
+          "name": "7.1 Test 404 Route",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/nonexistent",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "nonexistent"]
+            },
+            "description": "Test 404 error handling"
+          }
+        },
+        {
+          "name": "7.2 Test Unauthorized Access",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Unauthorized Test\",\n  \"content\": \"This should fail\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/threads",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "threads"]
+            },
+            "description": "Test authentication requirement (should fail without token)"
+          }
+        },
+        {
+          "name": "7.3 Test Invalid Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalid-email\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/auth/signup",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Test validation errors"
+          }
+        },
+        {
+          "name": "7.4 Test Admin-Only Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://forum-api-cfmd.onrender.com/api/admin/users",
+              "protocol": "https",
+              "host": ["forum-api-cfmd", "onrender", "com"],
+              "path": ["api", "admin", "users"]
+            },
+            "description": "Test admin authorization (should fail with user token)"
+          }
+        }
+      ]
+    }
+  ]
+}
